@@ -24,7 +24,7 @@ feature 'restaurants' do
   context 'creating restaurants' do
     scenario 'prompts user to fill out a form, then displays the new restaurant' do
       visit '/restaurants'
-      sign_up_and_in
+      sign_up_and_in('abc@123.com', 'password1', 'password1')
       click_link 'Add a restaurant'
       fill_in 'Name', with: 'KFC'
       click_button 'Create Restaurant'
@@ -35,7 +35,7 @@ feature 'restaurants' do
     context 'an invalid restaurant' do
       scenario 'does not let you submit a name that is too short' do
         visit '/restaurants'
-        sign_up_and_in
+        sign_up_and_in('abc@123.com', 'password1', 'password1')
         click_link 'Add a restaurant'
         fill_in 'Name', with: 'kf'
         click_button 'Create Restaurant'
@@ -62,7 +62,7 @@ feature 'restaurants' do
 
     scenario 'let a user edit a restaurant' do
       visit '/restaurants'
-      sign_up_and_in
+      sign_up_and_in('abc@123.com', 'password1', 'password1')
       click_link 'Edit KFC'
       fill_in 'Name', with: 'Kentucky Fried Chicken'
       click_button 'Update Restaurant'
@@ -72,11 +72,15 @@ feature 'restaurants' do
   end
 
   context 'deleting restaurants' do
-    before {Restaurant.create(name: 'KFC')}
+    before {
+      visit '/'
+      sign_up_and_in('abc@123.com', 'password1', 'password1')
+      click_link 'Add a restaurant'
+      fill_in 'Name', with: 'KFC'
+      click_button 'Create Restaurant'
+    }
 
     scenario 'removes a restaurant when a user clicks a delete link' do
-      visit '/restaurants'
-      sign_up_and_in
       click_link 'Delete KFC'
       expect(page).not_to have_content 'KFC'
       expect(page).to have_content 'Restaurant deleted successfully'
@@ -94,16 +98,6 @@ feature 'restaurants' do
   end
 
 end
-
-def sign_up_and_in
-  visit '/'
-  click_link 'Sign up'
-  fill_in 'Email', with: 'test@123.com'
-  fill_in 'Password', with: '12345678'
-  fill_in 'Password confirmation', with: '12345678'
-  click_button 'Sign up'
-end
-
 
 
 

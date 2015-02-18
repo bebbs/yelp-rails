@@ -16,12 +16,7 @@ end
 context "user signed in on the homepage" do
 
   before do
-    visit('/')
-    click_link('Sign up')
-    fill_in('Email', with: 'test@example.com')
-    fill_in('Password', with: 'testtest')
-    fill_in('Password confirmation', with: 'testtest')
-    click_button('Sign up')
+    sign_up_and_in('abc@123.com', 'password1', 'password1')
   end
 
   it "should see 'sign out' link" do
@@ -44,4 +39,29 @@ context "user limits" do
     expect(page).to have_content 'sign up before continuing'
   end
 
+  it 'Users can only edit / delete restaurants which they\'ve created' do
+    visit '/'
+    sign_up_and_in('abc@123.com', 'password1', 'password1')
+    click_link 'Add a restaurant'
+    fill_in 'Name', with: 'KFC'
+    click_button 'Create Restaurant'
+    click_link 'Sign out'
+    sign_up_and_in('baduser@123.com', 'password1', 'password1')
+    click_link 'Delete KFC'
+    expect(page).to have_content 'You can only delete restaurants you have added'
+    expect(page).to have_content 'Reviews for KFC'
+  end
+
 end
+
+
+
+
+
+
+
+
+
+
+
+
