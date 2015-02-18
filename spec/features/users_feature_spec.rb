@@ -39,7 +39,7 @@ context "user limits" do
     expect(page).to have_content 'sign up before continuing'
   end
 
-  it 'Users can only edit / delete restaurants which they\'ve created' do
+  it 'Users can only delete restaurants which they\'ve created' do
     visit '/'
     sign_up_and_in('abc@123.com', 'password1', 'password1')
     click_link 'Add a restaurant'
@@ -51,6 +51,21 @@ context "user limits" do
     expect(page).to have_content 'You can only delete restaurants you have added'
     expect(page).to have_content 'Reviews for KFC'
   end
+
+    it 'Users can only edit restaurants which they\'ve created' do
+    visit '/'
+    sign_up_and_in('abc@123.com', 'password1', 'password1')
+    click_link 'Add a restaurant'
+    fill_in 'Name', with: 'KFC'
+    click_button 'Create Restaurant'
+    click_link 'Sign out'
+    sign_up_and_in('baduser@123.com', 'password1', 'password1')
+    click_link 'Edit KFC'
+    expect(page).to have_content 'You can only edit restaurants you have added'
+    expect(page).to have_content 'Reviews for KFC'
+  end
+
+
 
 end
 
