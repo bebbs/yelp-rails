@@ -2,7 +2,12 @@ class ReviewsController < ApplicationController
 
   def new
     @restaurant = Restaurant.find(params[:restaurant_id])
-    @review = Review.new
+    if @restaurant.reviews.any? {|review| review.user == current_user }
+      redirect_to restaurants_path
+      flash[:alert] = 'You can only leave one review for a restaurant'
+    else
+      @review = Review.new
+    end
   end
 
   def create

@@ -40,6 +40,7 @@ class RestaurantsController < ApplicationController
   end
 
   def destroy
+    puts current_user.inspect
     @restaurant = Restaurant.find(params[:id])
     if @restaurant.user == current_user
       @restaurant.destroy

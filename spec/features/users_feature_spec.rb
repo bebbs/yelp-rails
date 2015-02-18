@@ -52,7 +52,7 @@ context "user limits" do
     expect(page).to have_content 'Reviews for KFC'
   end
 
-    it 'Users can only edit restaurants which they\'ve created' do
+  it 'Users can only edit restaurants which they\'ve created' do
     visit '/'
     sign_up_and_in('abc@123.com', 'password1', 'password1')
     click_link 'Add a restaurant'
@@ -63,6 +63,20 @@ context "user limits" do
     click_link 'Edit KFC'
     expect(page).to have_content 'You can only edit restaurants you have added'
     expect(page).to have_content 'Reviews for KFC'
+  end
+
+  it 'Users can only leave one review per restaurant' do
+    visit '/'
+    sign_up_and_in('abc@123.com', 'password1', 'password1')
+    click_link 'Add a restaurant'
+    fill_in 'Name', with: 'KFC'
+    click_button 'Create Restaurant'
+    click_link 'Review KFC'
+    fill_in 'Thoughts', with: 'So so'
+    select '3', from: 'Rating'
+    click_button 'Leave Review'
+    click_link 'Review KFC'
+    expect(page).to have_content 'You can only review a restaurant once'
   end
 
 
